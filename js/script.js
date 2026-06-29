@@ -128,10 +128,10 @@ function creerDeckPouvoir() {
     const deck = [];
     let n = 0;
     for (let i = 0; i < 3; i++) {
-        deck.push({ id: `pouvoir-b-${n++}`, famille: 'pouvoir', sousType: 'blocage', nom: 'Blocage' });
+        deck.push({ id: `pouvoir-b-${n++}`, famille: 'pouvoir', sousType: 'blocage', nom: 'Crac Crouc' });
     }
     for (let i = 0; i < 3; i++) {
-        deck.push({ id: `pouvoir-d-${n++}`, famille: 'pouvoir', sousType: 'deblocage', nom: 'Déblocage' });
+        deck.push({ id: `pouvoir-d-${n++}`, famille: 'pouvoir', sousType: 'deblocage', nom: 'Cric Crac' });
     }
     for (let i = 0; i < 3; i++) {
         deck.push({ id: `cagibi-${i}`, famille: 'special', sousType: 'cagibi', nom: 'Cagibi' });
@@ -140,7 +140,7 @@ function creerDeckPouvoir() {
         deck.push({ id: `vol-${i}`, famille: 'special', sousType: 'vol', nom: 'Vol' });
     }
     for (let i = 0; i < 3; i++) {
-        deck.push({ id: `protection-${i}`, famille: 'special', sousType: 'protection', nom: 'Protection' });
+        deck.push({ id: `protection-${i}`, famille: 'special', sousType: 'protection', nom: 'Immunité' });
     }
     for (let i = 0; i < 3; i++) {
         deck.push({ id: `vision-${i}`, famille: 'special', sousType: 'vision', nom: 'Vision' });
@@ -1928,7 +1928,7 @@ function animerProtection(onLand, onDone) {
     const endX   = dr.left + (dr.width  - cr.width)  / 2;
     const endY   = dr.top  + (dr.height - cr.height) / 2;
 
-    const fly = creerCarteVolante('Protection', 'carte-special-face', cr, startX, startY, 'protection');
+    const fly = creerCarteVolante('Immunité', 'carte-special-face', cr, startX, startY, 'protection');
 
     fly.style.transition = 'transform 0.12s ease-out';
     fly.style.transform  = 'translateY(-10px) scale(1.06)';
@@ -1982,7 +1982,7 @@ function volerCarte(joueurCibleId, carteId) {
         joueurActif.main = joueurActif.main.filter((c) => c.id !== volCarte.id);
         etat.defaussePouvoir.push(volCarte);
         afficherModal(
-            `<p class="modal-titre">🛡 Protection !</p><p>${cible.nom} était protégé — votre Vol est bloqué.</p>`,
+            `<p class="modal-titre">🛡 Immunité !</p><p>${cible.nom} est immunisé — votre Vol est bloqué.</p>`,
             () => avancerTour(true)
         );
         return;
@@ -2108,7 +2108,7 @@ function utiliserVision(joueurCibleId, carteId) {
     if (cible.protege) {
         cible.protege = false;
         afficherModal(
-            `<p class="modal-titre">🛡 Protection !</p><p>${cible.nom} était protégé — votre Vision est bloquée.</p>`,
+            `<p class="modal-titre">🛡 Immunité !</p><p>${cible.nom} est immunisé — votre Vision est bloquée.</p>`,
             () => avancerTour(true)
         );
         return;
@@ -2637,7 +2637,7 @@ function animerDeblocage(indexCase, callback) {
     const depotY  = dr.top  + (dr.height - FHD) / 2;
 
     // Clone de la carte Déblocage
-    const flyD = creerCarteVolante('Déblocage', 'carte-pouvoir-face', { width: FWD, height: FHD }, handX, handY, 'deblocage');
+    const flyD = creerCarteVolante('Cric Crac', 'carte-pouvoir-face', { width: FWD, height: FHD }, handX, handY, 'deblocage');
 
     /* ---- Phase 1 : Déblocage vole en arc vers la case ---- */
     const DUREE1 = 420;
@@ -3149,7 +3149,7 @@ function rendreZoneVous(joueur) {
     const peutDeclarer = aGagne(joueur);
 
     const badgeProtection = joueur.protege
-        ? '<span class="badge badge-protege">🛡 Protection active</span>'
+        ? '<span class="badge badge-protege">🛡 Immunité active</span>'
         : '';
 
     // Tour pénalisé : pioche obligatoire, pas d'autre action
