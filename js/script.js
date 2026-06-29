@@ -2047,15 +2047,17 @@ function volerCarte(joueurCibleId, carteId) {
                 fly.style.opacity = '0';
                 setTimeout(() => {
                     fly.remove();
-                    // Carte volée : part de la main humaine (zone-bas) vers le HUD de l'IA
-                    const voleeEl  = document.querySelector(`#zone-bas [data-id="${carteId}"]`);
+                    // Carte volée : part de la zone de la victime vers la zone du voleur
+                    const voleeEl  = document.querySelector(`[data-id="${carteId}"]`);
                     const zoneIA   = joueurActif.ia ? getZoneIA(joueurActif.id) : null;
-                    const zoneIAEl = zoneIA ? document.getElementById(zoneIA) : null;
-                    if (!voleeEl || !zoneIAEl) { terminer(); return; }
+                    const cibleEl  = zoneIA
+                        ? document.getElementById(zoneIA)
+                        : document.getElementById('zone-bas');
+                    if (!voleeEl || !cibleEl) { terminer(); return; }
 
                     voleeEl.style.visibility = 'hidden';
                     const vr  = voleeEl.getBoundingClientRect();
-                    const tr  = zoneIAEl.getBoundingClientRect();
+                    const tr  = cibleEl.getBoundingClientRect();
                     const dX2 = tr.left + tr.width  / 2 - vr.width  / 2;
                     const dY2 = tr.top  + tr.height / 2 - vr.height / 2;
 
