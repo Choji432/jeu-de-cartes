@@ -1576,6 +1576,10 @@ function avancerTour(piocher) {
         // En mode IA solo : la perspective reste fixée sur le joueur humain (id 0)
         etat.perspective = modeIA ? 0 : etat.tourActuel;
         etat.joueurs[etat.tourActuel].protege = false;
+        // Règle fondamentale : si le joueur a moins de 3 cartes, il doit piocher
+        if (etat.joueurs[etat.tourActuel].main.length < 3) {
+            etat.joueurs[etat.tourActuel].penalise = true;
+        }
         if (!modeIA) {
             // Mode local : écran de passation pour éviter que le joueur précédent
             // voie les cartes du joueur suivant.
@@ -2150,6 +2154,10 @@ function passerTourPenalise() {
         const modeIA = etat.joueurs.some(j => j.ia);
         etat.perspective = modeIA ? 0 : etat.tourActuel;
         etat.joueurs[etat.tourActuel].protege = false;
+        // Règle fondamentale : si le joueur a moins de 3 cartes, il doit piocher
+        if (etat.joueurs[etat.tourActuel].main.length < 3) {
+            etat.joueurs[etat.tourActuel].penalise = true;
+        }
         if (!modeIA) {
             afficherEcranPassation(etat.joueurs[etat.tourActuel], () => {
                 rendreTout();
@@ -3078,7 +3086,7 @@ function rendreIndicateurTour() {
     const estMonTour = etat.perspective === etat.tourActuel;
     let texte;
     if (estMonTour && actif.penalise) {
-        texte = `${actif.nom} — vous avez été volé ! Vous ne pouvez que piocher ce tour.`;
+        texte = `${actif.nom} — moins de 3 cartes en main ! Vous devez piocher ce tour.`;
     } else if (estMonTour) {
         texte = `À vous de jouer, ${actif.nom} — choisissez une carte dans votre main.`;
     } else {
@@ -3298,7 +3306,7 @@ function rendreZoneVous(joueur) {
                             return `<div class="${classes.join(' ')}"${st ? ` data-sous-type="${st}"` : ''}${img}>${st || c.image ? '' : c.nom}</div>`;
                         }).join('')}
                     </div>
-                    <p class="aide-action">Vous avez été volé — vous ne pouvez que piocher ce tour.</p>
+                    <p class="aide-action">Vous avez moins de 3 cartes — vous devez piocher ce tour (règle : minimum 3 cartes en main).</p>
                     <div class="boutons-action">
                         <button id="btn-piocher-penalise">Piocher et passer le tour</button>
                     </div>
