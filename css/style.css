@@ -1146,32 +1146,28 @@ button.actif {
     }
     .case { width: 50px; height: 70px; }
 
+    /* Pioche : taille réduite + on supprime l'effet de cartes empilées sur mobile */
     .pile-pioche { width: 54px; height: 76px; overflow: hidden; }
     .carte-pioche { width: 48px; height: 68px; }
+    .pioche-pile-2::after, .pioche-pile-3::after,
+    .pioche-pile-3::before { display: none; }
 
-    /* Cartes empilées pioche : adaptées à la taille mobile */
-    .pioche-pile-2::after, .pioche-pile-3::after {
-        top: 3px; left: 3px;
-        width: 48px; height: 68px;
-    }
-    .pioche-pile-3::before {
-        top: 6px; left: 6px;
-        width: 48px; height: 68px;
-    }
+    /* Défausse : même taille que la pioche réduite */
+    .pile-defausse { width: 48px; height: 68px; }
 
-    /* Pioche vers le haut, défausse vers le bas : plus d'espace entre les deux */
-    .groupe-pioche { gap: 18px; }
+    /* Pioche et défausse bien espacées */
+    .groupe-pioche { gap: 26px; }
 
     .centre {
         gap: 12px;
         transform: perspective(600px) rotateX(3deg);
     }
 
-    /* HUD adversaire : panel plus large + sans overflow pour ne pas couper les cartes */
-    .hud-panel { min-width: 100px; max-width: 180px; overflow: visible; }
+    /* HUD adversaire : assez large pour 4 cartes (30px × 4 + marges + padding = ~210px) */
+    .hud-panel { min-width: 100px; max-width: 210px; overflow: visible; }
     .hud-nom   { font-size: 0.62rem; }
     .hud-cartes { padding: 2px 5px 4px; gap: 3px; }
-    .carte-mini { width: 30px; height: 43px; }
+    .carte-mini { width: 30px; height: 43px; margin: 1px; }
 
     #zone-gauche { left: 2px; }
     #zone-droite { right: 2px; }
@@ -1214,8 +1210,8 @@ button.actif {
     .main-joueur { gap: 5px; }
 
     .carte-personnage-grande { width: 46px; min-height: 65px; }
-    .hud-panel  { min-width: 86px; max-width: 160px; overflow: visible; }
-    .carte-mini { width: 26px; height: 37px; }
+    .hud-panel  { min-width: 86px; max-width: 185px; overflow: visible; }
+    .carte-mini { width: 24px; height: 34px; margin: 1px; }
 }
 
 /* ---------------------------- ANIMATION BLOCAGE ---------------------------- */
