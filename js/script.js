@@ -2240,11 +2240,11 @@ function afficherRegles() {
                 <div class="regle-section">
                     <h3>Cartes spéciales</h3>
                     <ul>
-                        <li><strong>Blocage 🔒</strong> — Pose une case du plateau hors-jeu. Personne ne peut l'utiliser jusqu'au déblocage. Vous piochez une carte.</li>
-                        <li><strong>Déblocage 🔓</strong> — Débloque une case verrouillée. Vous piochez une carte.</li>
+                        <li><strong>Crac Crouc 🔒</strong> — Pose une case du plateau hors-jeu. Personne ne peut l'utiliser jusqu'au Cric Crac. Vous piochez une carte.</li>
+                        <li><strong>Cric Crac 🔓</strong> — Débloque une case verrouillée. Vous piochez une carte.</li>
                         <li><strong>Vol 🃏</strong> — Volez une carte au hasard dans la main d'un adversaire. Il ne peut que piocher au tour suivant.</li>
                         <li><strong>Vision 👁</strong> — Regardez en secret une carte dans la main d'un adversaire, sans la prendre.</li>
-                        <li><strong>Protection 🛡</strong> — Vous protège contre le Vol et la Vision pendant un tour.</li>
+                        <li><strong>Immunité 🛡</strong> — Vous protège contre le Vol et la Vision pendant un tour.</li>
                         <li><strong>Cagibi 📦</strong> — Carte vide, uniquement échangeable contre une case du plateau.</li>
                     </ul>
                 </div>
