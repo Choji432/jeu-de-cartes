@@ -2323,8 +2323,9 @@ function afficherEcranPassation(joueur, callback) {
     document.body.appendChild(overlay);
 
     overlay.querySelector('.btn-passation').addEventListener('click', () => {
+        callback(); // rend la vue du nouveau joueur sous l'overlay avant le fade-out
         overlay.classList.add('passation-fermeture');
-        setTimeout(() => { overlay.remove(); callback(); }, 340);
+        setTimeout(() => { overlay.remove(); }, 340);
     });
 }
 
