@@ -1363,7 +1363,8 @@ button.actif {
 .carte-face[data-sous-type="cagibi"]     { background-image: url('../assets/images/Cagibi.png'); }
 .carte-face[data-sous-type="blocage"]    { background-image: url('../assets/images/CracCric.png'); }
 .carte-face[data-sous-type="deblocage"]  { background-image: url('../assets/images/CracCrouc.png'); }
-.carte-face[data-sous-type="protection"] { background-image: url('../assets/images/Immunite.png'); }
+.carte-face[data-sous-type="protection"]  { background-image: url('../assets/images/Immunite.png'); }
+.carte-face[data-sous-type="entreouvert"] { background-image: url('../assets/images/Entreouvert.png'); }
 
 /* L'image remplace les borders colorés mais on garde une ombre */
 .carte-face[data-sous-type].carte-pouvoir-face,
