@@ -2246,6 +2246,7 @@ function afficherRegles() {
                         <li><strong>Cric Crac 🔓</strong> — Débloque une case verrouillée. Vous piochez une carte.</li>
                         <li><strong>Vol 🃏</strong> — Volez une carte au hasard dans la main d'un adversaire. Il ne peut que piocher au tour suivant.</li>
                         <li><strong>Vision 👁</strong> — Regardez en secret une carte dans la main d'un adversaire, sans la prendre.</li>
+                        <li><strong>Entrouverte 🚪</strong> — Entrouvrez discrètement une porte du plateau pour voir la carte cachée dessous, sans l'échanger. L'information reste secrète pour les autres.</li>
                         <li><strong>Immunité 🛡</strong> — Vous protège contre le Vol et la Vision pendant un tour.</li>
                         <li><strong>Cagibi 📦</strong> — Carte vide, uniquement échangeable contre une case du plateau.</li>
                     </ul>
