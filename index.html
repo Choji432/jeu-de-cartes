@@ -28,6 +28,10 @@
             <button data-joueurs="4" data-ia="3">vs 3 IA</button>
         </div>
     </div>
+
+    <div class="menu-section menu-section-regles">
+        <button id="bouton-regles-menu">📖 Règles du jeu</button>
+    </div>
 </div>
 
 <!-- ZONE DE JEU -->
@@ -36,7 +40,10 @@
     <div class="entete-jeu">
         <h1>Jeu de cartes</h1>
         <span id="badge-tour" class="badge-tour"></span>
-        <button id="bouton-nouvelle-partie" class="bouton-secondaire">Nouvelle partie</button>
+        <div class="entete-boutons">
+            <button id="bouton-nouvelle-partie" class="bouton-secondaire">Nouvelle partie</button>
+            <button id="bouton-regles-jeu" class="bouton-secondaire">Règles</button>
+        </div>
     </div>
     <p id="indicateur-tour" style="display:none"></p>
 

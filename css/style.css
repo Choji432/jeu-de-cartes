@@ -810,6 +810,121 @@ button.actif {
     margin-top: 20px;
 }
 
+/* ----- Boutons groupés dans l'entête (Nouvelle partie + Règles) ----- */
+
+.entete-boutons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* ----- Bouton règles dans le menu ----- */
+
+.menu-section-regles {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 20px;
+}
+
+.menu-section-regles button {
+    width: 100%;
+    border-color: var(--bois);
+    color: var(--creme);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.menu-section-regles button:hover {
+    background: var(--bois);
+    color: var(--creme);
+    opacity: 1;
+}
+
+/* ----- Modale des règles (grande, scrollable) ----- */
+
+.modal-regles {
+    max-width: 560px;
+    width: 94vw;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 28px 28px 20px;
+}
+
+.modal-regles .modal-titre {
+    text-align: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.regles-corps {
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bois) transparent;
+}
+
+.regles-corps::-webkit-scrollbar { width: 5px; }
+.regles-corps::-webkit-scrollbar-thumb { background: var(--bois); border-radius: 4px; }
+
+.regle-section {
+    margin-bottom: 20px;
+}
+
+.regle-section h3 {
+    font-family: var(--police-titre);
+    font-size: 1rem;
+    color: var(--or);
+    margin: 0 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(201,162,75,0.2);
+}
+
+.regle-section p {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--creme);
+    opacity: 0.85;
+    margin: 0 0 6px;
+}
+
+.regle-section ul {
+    margin: 4px 0 0 0;
+    padding-left: 18px;
+}
+
+.regle-section li {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--creme);
+    opacity: 0.85;
+    margin-bottom: 4px;
+}
+
+.regle-section li strong {
+    color: var(--or);
+    opacity: 1;
+}
+
+.regle-victoire {
+    background: rgba(46,125,50,0.12);
+    border: 1px solid rgba(46,125,50,0.35);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: #6FCF73;
+}
+
+.modal-regles .btn-fermer-regles {
+    margin-top: 18px;
+    flex-shrink: 0;
+    width: 100%;
+}
+
 /* ----- panneau de test (mode local, à retirer une fois la synchro branchée) ----- */
 
 .panneau-test {

@@ -2194,6 +2194,84 @@ function declarerVictoire(joueur) {
 }
 
 /* ====================================================================
+   RÈGLES DU JEU
+   ==================================================================== */
+
+function afficherRegles() {
+    if (document.getElementById('modal-regles')) {
+        document.getElementById('modal-regles').remove();
+        return;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = 'modal-regles';
+    overlay.className = 'overlay-modal';
+    overlay.innerHTML = `
+        <div class="modal-contenu modal-regles">
+            <p class="modal-titre">📖 Règles du jeu</p>
+
+            <div class="regles-corps">
+
+                <div class="regle-section">
+                    <h3>But du jeu</h3>
+                    <p>Chaque joueur incarne un <strong>personnage secret</strong> (Médecin, Pompier, Vacancier ou Juge). Le premier à réunir les <strong>3 objets de son personnage</strong> dans sa main et à déclarer victoire gagne la partie.</p>
+                </div>
+
+                <div class="regle-section">
+                    <h3>Mise en place</h3>
+                    <ul>
+                        <li>10 cartes sont placées <strong>face cachée</strong> sur le plateau central.</li>
+                        <li>Chaque joueur reçoit <strong>3 cartes</strong> en main.</li>
+                        <li>Votre personnage secret est visible <strong>uniquement pour vous</strong>.</li>
+                        <li>En mode local, passez l'écran à chaque nouveau joueur.</li>
+                    </ul>
+                </div>
+
+                <div class="regle-section">
+                    <h3>Déroulement d'un tour</h3>
+                    <ul>
+                        <li>Cliquez une carte dans votre main pour la sélectionner.</li>
+                        <li>Cliquez une case du plateau : votre carte y est déposée face cachée, et vous récupérez celle qui s'y trouvait.</li>
+                        <li>La carte récupérée est révélée dans votre main.</li>
+                        <li>Si c'est un objet de votre personnage, elle s'affiche en <strong style="color:#6FCF73">vert</strong> !</li>
+                    </ul>
+                </div>
+
+                <div class="regle-section">
+                    <h3>Cartes spéciales</h3>
+                    <ul>
+                        <li><strong>Blocage 🔒</strong> — Pose une case du plateau hors-jeu. Personne ne peut l'utiliser jusqu'au déblocage. Vous piochez une carte.</li>
+                        <li><strong>Déblocage 🔓</strong> — Débloque une case verrouillée. Vous piochez une carte.</li>
+                        <li><strong>Vol 🃏</strong> — Volez une carte au hasard dans la main d'un adversaire. Il ne peut que piocher au tour suivant.</li>
+                        <li><strong>Vision 👁</strong> — Regardez en secret une carte dans la main d'un adversaire, sans la prendre.</li>
+                        <li><strong>Protection 🛡</strong> — Vous protège contre le Vol et la Vision pendant un tour.</li>
+                        <li><strong>Cagibi 📦</strong> — Carte vide, uniquement échangeable contre une case du plateau.</li>
+                    </ul>
+                </div>
+
+                <div class="regle-section">
+                    <h3>Pioche</h3>
+                    <p>Quand la pioche est vide, les cartes spéciales de la défausse sont remélangées pour former une nouvelle pioche.</p>
+                </div>
+
+                <div class="regle-section">
+                    <div class="regle-victoire">
+                        🏆 <strong>Victoire</strong> — Dès que vous avez les 3 objets de votre personnage en main, le bouton <em>"Déclarer victoire"</em> apparaît. Cliquez-le pour gagner !
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="bouton-secondaire btn-fermer-regles">Fermer</button>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    overlay.querySelector('.btn-fermer-regles').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+}
+
+/* ====================================================================
    MODALE GÉNÉRIQUE
    ==================================================================== */
 
@@ -3246,6 +3324,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     document.getElementById('bouton-nouvelle-partie').addEventListener('click', retourMenu);
+    document.getElementById('bouton-regles-jeu').addEventListener('click', afficherRegles);
+    document.getElementById('bouton-regles-menu').addEventListener('click', afficherRegles);
 });
 
 /* ====================================================================
