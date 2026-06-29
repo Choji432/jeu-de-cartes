@@ -1152,8 +1152,14 @@ button.actif {
     .pioche-pile-2::after, .pioche-pile-3::after,
     .pioche-pile-3::before { display: none; }
 
-    /* Défausse : même taille que la pioche réduite */
-    .pile-defausse { width: 48px; height: 68px; }
+    /* Défausse : conteneur + carte interne aux bonnes dimensions sans conflit min-height */
+    .pile-defausse { width: 52px; height: 74px; }
+    .pile-defausse .carte-face {
+        width: 50px;
+        height: 70px;
+        min-height: 70px;
+        flex-shrink: 0;
+    }
 
     /* Pioche et défausse bien espacées */
     .groupe-pioche { gap: 26px; }
