@@ -2473,6 +2473,7 @@ function creerCarteVolante(nom, classeExtra, refRect, x, y, sousType = null, ima
         top:            y + 'px',
         width:          refRect.width  + 'px',
         height:         refRect.height + 'px',
+        minHeight:      refRect.height + 'px',
         zIndex:         '500',
         pointerEvents:  'none',
         margin:         '0',
