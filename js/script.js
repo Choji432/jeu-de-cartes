@@ -2729,7 +2729,6 @@ function animerDeblocage(indexCase, callback) {
 
     etat.animation = true;
     carteEl.style.visibility = 'hidden';
-    caseEl.style.visibility  = 'hidden';
 
     const cr = carteEl.getBoundingClientRect();   // carte en main
     const sr = caseEl.getBoundingClientRect();    // case bloquée sur le plateau
