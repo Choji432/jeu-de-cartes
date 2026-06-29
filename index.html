@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon jeu de cartes</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- MENU -->
+<div id="menu">
+    <h1>Mon jeu de cartes</h1>
+    <div class="menu-section">
+        <h2>Multijoueur local</h2>
+        <div class="boutons-menu">
+            <button data-joueurs="2">2 joueurs</button>
+            <button data-joueurs="3">3 joueurs</button>
+            <button data-joueurs="4">4 joueurs</button>
+        </div>
+    </div>
+
+    <div class="menu-section">
+        <h2>Solo contre IA</h2>
+        <div class="boutons-menu">
+            <button data-joueurs="2" data-ia="1">vs 1 IA</button>
+            <button data-joueurs="3" data-ia="2">vs 2 IA</button>
+            <button data-joueurs="4" data-ia="3">vs 3 IA</button>
+        </div>
+    </div>
+</div>
+
+<!-- ZONE DE JEU -->
+<div id="jeu">
+
+    <div class="entete-jeu">
+        <h1>Jeu de cartes</h1>
+        <span id="badge-tour" class="badge-tour"></span>
+        <button id="bouton-nouvelle-partie" class="bouton-secondaire">Nouvelle partie</button>
+    </div>
+    <p id="indicateur-tour" style="display:none"></p>
+
+    <div class="table">
+
+        <div id="zone-haut" class="zone-joueur"></div>
+
+        <div class="rangee-milieu">
+            <div id="zone-gauche" class="zone-joueur"></div>
+
+            <div class="centre">
+                <div class="groupe-pioche">
+                    <div id="pioche" class="pioche"></div>
+                    <div id="defausse-pouvoir" class="pioche"></div>
+                </div>
+                <div id="plateau" class="plateau"></div>
+            </div>
+
+            <div id="zone-droite" class="zone-joueur"></div>
+        </div>
+
+        <div id="zone-bas" class="zone-joueur"></div>
+
+    </div>
+
+    <div id="panneau-test" class="panneau-test"></div>
+
+    <div id="ecran-victoire" class="ecran-victoire" style="display: none;"></div>
+
+</div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>

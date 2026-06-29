@@ -1,0 +1,1278 @@
+/* ====================================================================
+   JEU DE CARTES — IDENTITÉ VISUELLE
+   Table de jeu en feutre, cartes façon jeu de société.
+   Palette et typo définies comme variables : modifie ici pour
+   personnaliser l'ensemble du jeu.
+   ==================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Public+Sans:wght@400;500;700&display=swap');
+
+:root {
+    --feutre: #252525;
+    --feutre-dark: #111111;
+    --bois: #8B5E3C;
+    --bois-dark: #5C3D26;
+    --creme: #F4ECDC;
+    --encre: #261B12;
+    --or: #C9A24B;
+    --accent: #A8334C;
+
+    --police-titre: 'Fraunces', serif;
+    --police-texte: 'Public Sans', sans-serif;
+
+    --rayon: 10px;
+    --ombre: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--feutre-dark);
+    color: var(--creme);
+    font-family: var(--police-texte);
+    text-align: center;
+}
+
+h1, h2, h3 {
+    font-family: var(--police-titre);
+    margin: 0.3em 0;
+}
+
+/* ---------------------------- MENU ---------------------------- */
+
+#menu {
+    max-width: 480px;
+    margin: 10vh auto 0;
+    padding: 40px 30px;
+    background: var(--feutre);
+    border: 1px solid var(--bois);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+#menu h1 {
+    font-size: 2.2rem;
+    color: var(--or);
+}
+
+#menu h2 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--creme);
+    opacity: 0.8;
+    margin-bottom: 16px;
+}
+
+.menu-section {
+    margin-top: 28px;
+}
+
+.menu-section:first-of-type {
+    margin-top: 0;
+}
+
+.boutons-menu {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+button {
+    font-family: var(--police-texte);
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: 1px solid var(--or);
+    background: transparent;
+    color: var(--or);
+    padding: 12px 20px;
+    border-radius: var(--rayon);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background: var(--or);
+    color: var(--encre);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button.actif {
+    background: var(--or);
+    color: var(--encre);
+}
+
+/* ---------------------------- JEU ---------------------------- */
+
+#jeu {
+    display: none;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    padding: 4px 6px 6px;
+    gap: 4px;
+}
+
+.entete-jeu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 4px;
+    flex-shrink: 0;
+}
+
+/* Titre de jeu : petit, à gauche */
+.entete-jeu h1 {
+    font-size: 0.95rem;
+    color: var(--or);
+    opacity: 0.7;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.badge-tour {
+    flex: 1;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--or);
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bouton-secondaire {
+    border-color: var(--creme);
+    color: var(--creme);
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    flex-shrink: 0;
+}
+
+.bouton-secondaire:hover {
+    background: var(--creme);
+    color: var(--encre);
+}
+
+.table {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0 0 120px 0;
+    box-shadow: none;
+}
+
+/* Zone du joueur : collée au bas de l'écran */
+#zone-bas {
+    position: fixed;
+    bottom: -4px;   /* légèrement hors écran = visuellement plus bas */
+    left: 0;
+    right: 0;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    padding: 4px 16px 6px;
+}
+
+/* Les zones adversaires flottent en overlay HUD */
+#zone-haut {
+    position: fixed;
+    top: 38px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    pointer-events: auto;
+}
+
+#zone-gauche {
+    position: fixed;
+    top: 38px;
+    left: 8px;
+    z-index: 50;
+    pointer-events: auto;
+}
+
+#zone-droite {
+    position: fixed;
+    top: 38px;
+    right: 8px;
+    z-index: 50;
+    pointer-events: auto;
+}
+
+.zone-joueur {
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* ---- Panneau HUD adversaire ---- */
+.hud-panel {
+    background: rgba(18, 18, 18, 0.88);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+    min-width: 180px;
+    max-width: 270px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.hud-panel.hud-actif {
+    border-color: var(--or);
+    box-shadow: 0 0 0 1px var(--or), 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.hud-panel.zone-cible-action {
+    border-color: var(--accent);
+    cursor: pointer;
+    animation: pulse-cible 1.2s ease infinite;
+}
+
+.hud-panel.hud-cible {
+    border-color: var(--accent);
+}
+
+.hud-entete {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px 3px;
+}
+
+.hud-nom {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--or);
+}
+
+.hud-cartes {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px 6px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.hud-main {
+    display: flex;
+    gap: 3px;
+}
+
+.hud-perso {
+    flex-shrink: 0;
+}
+
+.zone-joueur-contenu {
+    padding: 0 8px;
+    min-width: 0;
+}
+
+.zone-joueur-contenu h3 {
+    font-size: 0.95rem;
+    color: var(--or);
+}
+
+.rangee-milieu {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 12px;
+}
+
+.centre {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    /* perspective() dans le transform : n'affecte pas position:fixed des ancêtres */
+    transform: perspective(900px) rotateX(5deg);
+    transform-origin: center 60%;
+}
+
+.groupe-pioche {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+/* ----- plateau central : 2 rangées de 5 cartes face cachée ----- */
+
+.plateau {
+    display: grid;
+    grid-template-columns: repeat(5, 76px);
+    grid-template-rows: repeat(2, 107px);
+    gap: 7px;
+}
+
+.case {
+    width: 76px;
+    height: 107px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.case .carte-dos {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+}
+
+/* ----- pioche, posée à côté du plateau ----- */
+
+.pioche {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.pile-pioche {
+    position: relative;
+    /* Espace supplémentaire pour que les cartes du dessous puissent dépasser */
+    width: 80px;
+    height: 108px;
+}
+
+.carte-pioche {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 72px;
+    height: 100px;
+    border-radius: 6px;
+    z-index: 2;
+}
+
+/* Carte visible en dessous (2+ cartes en pioche) */
+.pioche-pile-2::after,
+.pioche-pile-3::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 72px;
+    height: 100px;
+    border-radius: 6px;
+    background: url('../assets/images/Porte.png') center / cover no-repeat;
+    filter: brightness(0.62);
+    z-index: 1;
+}
+
+/* Deuxième carte visible en dessous (3+ cartes en pioche) */
+.pioche-pile-3::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 72px;
+    height: 100px;
+    border-radius: 6px;
+    background: url('../assets/images/Porte.png') center / cover no-repeat;
+    filter: brightness(0.38);
+    z-index: 0;
+}
+
+.pioche-vide {
+    border: 1px dashed rgba(244, 236, 220, 0.3);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.compteur-pioche {
+    font-size: 0.75rem;
+    color: var(--creme);
+    opacity: 0.8;
+}
+
+/* ----- indicateur de tour ----- */
+
+/* Indicateur de tour intégré dans l'entête, plus compact */
+.indicateur-tour {
+    display: none; /* intégré dans l'entête via JS */
+}
+
+/* ----- zone du joueur actif : pas d'encadré visible ----- */
+
+/* ----- cases du plateau : jouable / bloquée ----- */
+
+.case-jouable {
+    box-shadow: 0 0 0 2px var(--or), var(--ombre);
+}
+
+.case-jouable:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), 0 0 0 2px var(--or);
+}
+
+.case-bloquee {
+    border-color: var(--accent);
+}
+
+/* Voile sombre sur la case bloquée */
+.case-bloquee::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Cadenas centré, bien visible */
+.case-bloquee::before {
+    content: "🔒";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.6rem;
+    z-index: 2;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+}
+
+/* ----- défausse de cartes pouvoir, à côté de la pioche ----- */
+
+.pile-defausse {
+    width: 78px;
+    height: 109px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.pile-defausse.pile-vide {
+    border: 1px dashed rgba(244, 236, 220, 0.35);
+}
+
+.bouton-action {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+}
+
+/* ----- choix d'action une fois une carte sélectionnée ----- */
+
+.bloc-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-left: 14px;
+}
+
+.actions-carte {
+    min-height: 1.2em;
+}
+
+.aide-action {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin: 4px 0;
+}
+
+.boutons-action {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.boutons-action button {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+}
+
+.boutons-action button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.boutons-action button:disabled:hover {
+    background: transparent;
+    color: var(--or);
+}
+
+/* ----- carte objectif trouvée (l'un des 3 objets du joueur) ----- */
+
+.carte-objectif {
+    border: 2px solid #2E7D32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.25), var(--ombre);
+}
+
+.bouton-victoire {
+    margin-top: 6px;
+    border-color: #2E7D32;
+    color: #6FCF73;
+    font-size: 0.9rem;
+}
+
+.bouton-victoire:hover {
+    background: #2E7D32;
+    color: var(--creme);
+}
+
+/* ----- écran de victoire ----- */
+
+.ecran-victoire {
+    max-width: 480px;
+    margin: 8vh auto 0;
+    padding: 40px 30px;
+    background: var(--feutre);
+    border: 1px solid var(--or);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.ecran-victoire h1 {
+    color: var(--or);
+    font-size: 1.6rem;
+}
+
+.ecran-victoire .main-joueur {
+    margin: 16px 0;
+    justify-content: center;
+}
+
+.victoire-afk {
+    font-size: 0.9rem;
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    border-radius: 6px;
+    padding: 8px 14px;
+    margin: 6px 0 14px;
+    line-height: 1.5;
+}
+
+/* ----- dos de carte : image Porte ----- */
+
+.carte-dos {
+    background-image: url('../assets/images/Porte.png');
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #000;
+    box-shadow: var(--ombre);
+    position: relative;
+}
+
+.carte-dos::after {
+    content: none;
+}
+
+.carte-mini {
+    width: 44px;
+    height: 62px;
+    border-radius: 4px;
+    margin: 2px;
+}
+
+.carte-mini::after {
+    font-size: 0.7rem;
+}
+
+.mini-main {
+    display: flex;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+/* ----- cartes face visible (votre zone) ----- */
+
+.zone-vous {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 4px 12px 4px;
+}
+
+/* Carte personnage à gauche de la main, grande et bien visible */
+.personnage-central {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.carte-personnage-grande {
+    width: 72px;
+    min-height: 100px;
+    font-size: 1rem;
+    font-family: var(--police-titre);
+    border: 3px solid var(--or);
+    box-shadow: 0 0 0 5px rgba(201, 162, 75, 0.2), 0 8px 24px rgba(0,0,0,0.5);
+}
+
+/* Petite carte personnage dans les zones adverses */
+.carte-personnage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.etiquette {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--or);
+}
+
+.carte-face {
+    width: 78px;
+    min-height: 109px;
+    background: var(--creme);
+    color: var(--encre);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 6px;
+    box-shadow: var(--ombre);
+}
+
+.carte-personnage-face {
+    border: 2px solid var(--or);
+    box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.25), var(--ombre);
+    font-family: var(--police-titre);
+    font-size: 0.85rem;
+    background-size: cover;
+    background-position: center top;
+    background-color: #1a1008;
+}
+
+.carte-pouvoir-face {
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 0 3px rgba(168, 51, 76, 0.2), var(--ombre);
+}
+
+/* Cartes de la main : légèrement plus grandes que les cartes standard */
+.main-joueur .carte-face {
+    width: 92px;
+    min-height: 128px;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.main-joueur .carte-face:hover {
+    transform: translateY(-10px) scale(1.45);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(201, 162, 75, 0.5);
+    z-index: 10;
+}
+
+/* Cases jouables du plateau */
+.case-jouable {
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.carte-selectionnee {
+    transform: translateY(-10px);
+    box-shadow: 0 0 0 3px var(--or), var(--ombre);
+}
+
+.main-joueur {
+    display: flex;
+    gap: 10px;
+}
+
+/* ----- cartes spéciales (Cagibi, Vol, Vision, Protection) ----- */
+
+.carte-special-face {
+    border: 2px solid #6B7280;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2), var(--ombre);
+}
+
+/* ----- ciblage Vol / Vision : zone adversaire cliquable ----- */
+
+.zone-cible-action {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(168, 51, 76, 0.45);
+    cursor: pointer;
+    transition: box-shadow 0.15s ease;
+}
+
+.zone-cible-action:hover {
+    box-shadow: 0 0 0 4px rgba(168, 51, 76, 0.65);
+}
+
+.aide-cible {
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin: 4px 0 0;
+}
+
+/* ----- cartes face cachée cliquables (vol / vision aveugles) ----- */
+
+.main-cible {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.carte-selectionnable {
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.carte-selectionnable:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px var(--accent);
+}
+
+/* ----- badges statut joueur ----- */
+
+.badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin: 3px 2px;
+}
+
+.badge-protege {
+    background: rgba(46, 125, 50, 0.25);
+    border: 1px solid #2E7D32;
+    color: #6FCF73;
+}
+
+.badge-penalise {
+    background: rgba(168, 51, 76, 0.2);
+    border: 1px solid var(--accent);
+    color: #E57399;
+}
+
+/* ----- modale (Vision, Protection bloquée, etc.) ----- */
+
+.overlay-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-contenu {
+    background: var(--feutre);
+    border: 1px solid var(--or);
+    border-radius: var(--rayon);
+    padding: 32px 28px;
+    max-width: 340px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--ombre);
+}
+
+.modal-titre {
+    font-family: var(--police-titre);
+    font-size: 1.3rem;
+    color: var(--or);
+    margin-bottom: 12px;
+}
+
+.modal-contenu button {
+    margin-top: 20px;
+}
+
+/* ----- panneau de test (mode local, à retirer une fois la synchro branchée) ----- */
+
+.panneau-test {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    z-index: 60;
+}
+
+.test-hamburger {
+    position: relative;
+}
+
+.test-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: rgba(18,18,18,0.85);
+    border: 1px solid rgba(201,162,75,0.4);
+    border-radius: 8px;
+    color: var(--creme);
+    font-size: 0.78rem;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+}
+
+.test-toggle:hover { border-color: var(--or); }
+
+.test-toggle .ham { font-size: 1rem; }
+
+.test-label { opacity: 0.85; }
+.test-label strong { color: var(--or); }
+
+.test-dropdown {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    background: rgba(18,18,18,0.92);
+    border: 1px solid rgba(201,162,75,0.35);
+    border-radius: 10px;
+    padding: 10px 12px;
+    backdrop-filter: blur(6px);
+    min-width: 200px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+.test-dropdown[hidden] { display: none; }
+
+.note-test {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-bottom: 8px;
+}
+
+.boutons-perspective {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.boutons-perspective button {
+    font-size: 0.78rem;
+    padding: 5px 10px;
+}
+
+/* ----- Écran de passation de tour (multijoueur local) ----- */
+
+.ecran-passation {
+    position: fixed;
+    inset: 0;
+    background: var(--feutre-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: passation-entree 0.28s ease both;
+}
+
+@keyframes passation-entree {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.ecran-passation.passation-fermeture {
+    animation: passation-sortie 0.32s ease both;
+}
+
+@keyframes passation-sortie {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.96); }
+}
+
+.passation-contenu {
+    text-align: center;
+    padding: 40px 32px;
+    max-width: 440px;
+    width: 90vw;
+    background: var(--feutre);
+    border: 1px solid var(--bois);
+    border-radius: var(--rayon);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+
+.passation-badge {
+    display: inline-block;
+    background: var(--bois);
+    color: var(--creme);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+}
+
+.passation-titre {
+    font-family: var(--police-titre);
+    font-size: 1.8rem;
+    color: var(--creme);
+    margin: 0 0 6px;
+}
+
+.passation-sous-titre {
+    font-size: 1.15rem;
+    color: var(--or);
+    line-height: 1.5;
+    margin: 0 0 14px;
+}
+
+.passation-instruction {
+    font-size: 0.82rem;
+    color: var(--creme);
+    opacity: 0.65;
+    line-height: 1.65;
+    margin: 0 0 26px;
+}
+
+.btn-passation {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 15px 24px;
+    background: var(--or);
+    color: var(--encre);
+    border: none;
+    border-radius: var(--rayon);
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 14px rgba(201,162,75,0.35);
+}
+
+.btn-passation:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(201,162,75,0.5);
+}
+
+.btn-passation:active {
+    transform: scale(0.97);
+}
+
+/* ---------------------------- RESPONSIVE ---------------------------- */
+
+/* ---- Tablet (< 900px) ---- */
+@media (max-width: 900px) {
+    .plateau {
+        grid-template-columns: repeat(5, 68px);
+        grid-template-rows: repeat(2, 96px);
+        gap: 6px;
+    }
+    .case { width: 68px; height: 96px; }
+}
+
+/* ---- Mobile paysage / Petite tablette (< 768px) ---- */
+@media (max-width: 768px) {
+    .plateau {
+        grid-template-columns: repeat(5, 58px);
+        grid-template-rows: repeat(2, 82px);
+        gap: 5px;
+    }
+    .case { width: 58px; height: 82px; }
+
+    .hud-panel { min-width: 130px; max-width: 190px; }
+
+    .main-joueur .carte-face { width: 80px; min-height: 112px; }
+
+    .pile-pioche { width: 68px; height: 92px; }
+    .carte-pioche { width: 60px; height: 84px; }
+}
+
+/* ---- Mobile portrait (< 480px) ---- */
+@media (max-width: 480px) {
+    #menu { margin: 4vh auto 0; padding: 20px 14px; max-width: 92vw; }
+    #menu h1 { font-size: 1.7rem; }
+
+    .boutons-menu { gap: 8px; }
+    .boutons-menu button { padding: 10px 14px; font-size: 0.88rem; }
+
+    .entete-jeu h1  { font-size: 0.78rem; }
+    .badge-tour     { font-size: 0.68rem; }
+    .bouton-secondaire { font-size: 0.68rem; padding: 4px 8px; }
+
+    .plateau {
+        grid-template-columns: repeat(5, 50px);
+        grid-template-rows: repeat(2, 70px);
+        gap: 4px;
+    }
+    .case { width: 50px; height: 70px; }
+
+    .pile-pioche { width: 54px; height: 76px; }
+    .carte-pioche { width: 48px; height: 68px; }
+    .groupe-pioche { gap: 8px; }
+
+    .centre {
+        gap: 12px;
+        transform: perspective(600px) rotateX(3deg);
+    }
+
+    .hud-panel { min-width: 100px; max-width: 150px; }
+    .hud-nom   { font-size: 0.62rem; }
+    .hud-cartes { padding: 2px 5px 4px; gap: 3px; }
+    .carte-mini { width: 32px; height: 45px; }
+
+    #zone-gauche { left: 2px; }
+    #zone-droite { right: 2px; }
+
+    .zone-vous {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 8px;
+    }
+    .personnage-central {
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+    }
+    .carte-personnage-grande { width: 54px; min-height: 76px; font-size: 0.8rem; }
+
+    .main-joueur .carte-face { width: 66px; min-height: 92px; font-size: 0.65rem; }
+    .main-joueur { gap: 7px; }
+
+    .table { padding: 0 0 106px 0; }
+
+    .ecran-victoire { margin: 4vh auto 0; padding: 24px 14px; }
+    .ecran-victoire h1 { font-size: 1.3rem; }
+
+    .passation-titre { font-size: 1.4rem; }
+    .btn-passation { font-size: 0.92rem; padding: 13px 18px; }
+}
+
+/* ---- Très petit téléphone (< 360px) ---- */
+@media (max-width: 360px) {
+    .plateau {
+        grid-template-columns: repeat(5, 42px);
+        grid-template-rows: repeat(2, 59px);
+        gap: 3px;
+    }
+    .case { width: 42px; height: 59px; }
+
+    .main-joueur .carte-face { width: 58px; min-height: 80px; }
+    .main-joueur { gap: 5px; }
+
+    .carte-personnage-grande { width: 46px; min-height: 65px; }
+    .hud-panel  { min-width: 86px; max-width: 125px; }
+    .carte-mini { width: 28px; height: 39px; }
+}
+
+/* ---------------------------- ANIMATION BLOCAGE ---------------------------- */
+
+@keyframes fumee-anim {
+    0%   { transform: translate(0, 0) scale(0.2); opacity: 1; }
+    50%  { opacity: 0.65; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(2.2); opacity: 0; }
+}
+
+/* ---------------------------- ANIMATION VOL ---------------------------- */
+
+.overlay-vol {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 600;
+    pointer-events: none;
+    animation: vol-fond 2.8s ease forwards;
+}
+
+@keyframes vol-fond {
+    0%   { background: rgba(0,0,0,0);    opacity: 0; }
+    5%   { background: rgba(0,0,0,0.88); opacity: 1; }
+    13%  { background: rgba(90,5,20,0.7);}
+    24%  { background: rgba(0,0,0,0.88); }
+    78%  { background: rgba(0,0,0,0.88); opacity: 1; }
+    100% { background: rgba(0,0,0,0);    opacity: 0; }
+}
+
+.vol-texte {
+    display: flex;
+    align-items: center;
+    gap: 0.02em;
+    user-select: none;
+}
+
+.vol-lettre {
+    font-family: var(--police-titre);
+    font-size: clamp(90px, 22vw, 300px);
+    font-weight: 900;
+    line-height: 1;
+    display: inline-block;
+    color: var(--accent);
+    text-shadow:
+        0 0 20px rgba(168, 51, 76, 1),
+        0 0 60px rgba(168, 51, 76, 0.6),
+        0 0 120px rgba(168, 51, 76, 0.3),
+        4px 4px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* V : entre depuis le coin haut-gauche en tournant */
+.vol-V {
+    animation:
+        vol-entree-V  0.36s cubic-bezier(0.22, 1.4, 0.36, 1) 0s    1 normal both,
+        vol-vibration 0.17s ease-in-out                        0.36s 7 alternate none,
+        vol-sortie-V  0.32s ease-in                            1.68s 1 normal both;
+}
+@keyframes vol-entree-V {
+    0%   { transform: translate(-130vw, -90vh) rotate(-200deg) scale(0.04); opacity: 0; }
+    55%  { opacity: 1; }
+    82%  { transform: translate(3%, 2%) rotate(5deg) scale(1.1); }
+    100% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+}
+@keyframes vol-sortie-V {
+    0%   { transform: scale(1); opacity: 1; }
+    100% { transform: translate(-100vw, -80vh) rotate(-150deg) scale(0.05); opacity: 0; }
+}
+
+/* O : tombe du dessus en tournant sur lui-même */
+.vol-O {
+    animation:
+        vol-entree-O  0.36s cubic-bezier(0.22, 1.4, 0.36, 1) 0.07s 1 normal both,
+        vol-vibration 0.17s ease-in-out                        0.43s 7 alternate none,
+        vol-sortie-O  0.32s ease-in                            1.68s 1 normal both;
+}
+@keyframes vol-entree-O {
+    0%   { transform: translate(0, -130vh) rotate(300deg) scale(0.04); opacity: 0; }
+    55%  { opacity: 1; }
+    82%  { transform: translate(0, -3%) rotate(-6deg) scale(1.12); }
+    100% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+}
+@keyframes vol-sortie-O {
+    0%   { transform: scale(1); opacity: 1; }
+    40%  { transform: scale(2); opacity: 0.7; }
+    100% { transform: scale(9); opacity: 0; }
+}
+
+/* L : entre depuis le coin haut-droit en tournant */
+.vol-L {
+    animation:
+        vol-entree-L  0.36s cubic-bezier(0.22, 1.4, 0.36, 1) 0.14s 1 normal both,
+        vol-vibration 0.17s ease-in-out                        0.50s 7 alternate none,
+        vol-sortie-L  0.32s ease-in                            1.68s 1 normal both;
+}
+@keyframes vol-entree-L {
+    0%   { transform: translate(130vw, -90vh) rotate(200deg) scale(0.04); opacity: 0; }
+    55%  { opacity: 1; }
+    82%  { transform: translate(-3%, 2%) rotate(-5deg) scale(1.1); }
+    100% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+}
+@keyframes vol-sortie-L {
+    0%   { transform: scale(1); opacity: 1; }
+    100% { transform: translate(100vw, -80vh) rotate(150deg) scale(0.05); opacity: 0; }
+}
+
+/* Pulsation commune : scale + skew + glow */
+@keyframes vol-vibration {
+    from {
+        transform: scale(1) skewX(0deg) translateY(0);
+        text-shadow:
+            0 0 20px rgba(168, 51, 76, 0.9),
+            0 0 60px rgba(168, 51, 76, 0.5),
+            4px 4px 0 rgba(0,0,0,0.6);
+        filter: brightness(1);
+    }
+    to {
+        transform: scale(1.07) skewX(-3deg) translateY(-6px);
+        text-shadow:
+            0 0 40px rgba(168, 51, 76, 1),
+            0 0 100px rgba(168, 51, 76, 0.9),
+            0 0 180px rgba(168, 51, 76, 0.4),
+            4px 4px 0 rgba(0,0,0,0.6);
+        filter: brightness(1.45);
+    }
+}
+
+/* ---------------------------- ILLUSTRATIONS CARTES POUVOIR ---------------------------- */
+
+.carte-face[data-sous-type] {
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    color: transparent;
+    font-size: 0;
+    padding: 0;
+}
+
+.carte-face[data-sous-type="vol"]        { background-image: url('../assets/images/Vol.png'); }
+.carte-face[data-sous-type="vision"]     { background-image: url('../assets/images/Vision.png'); }
+.carte-face[data-sous-type="cagibi"]     { background-image: url('../assets/images/Cagibi.png'); }
+.carte-face[data-sous-type="blocage"]    { background-image: url('../assets/images/CracCric.png'); }
+.carte-face[data-sous-type="deblocage"]  { background-image: url('../assets/images/CracCrouc.png'); }
+.carte-face[data-sous-type="protection"] { background-image: url('../assets/images/Immunite.png'); }
+
+/* L'image remplace les borders colorés mais on garde une ombre */
+.carte-face[data-sous-type].carte-pouvoir-face,
+.carte-face[data-sous-type].carte-special-face {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Sélection : contour doré autour de l'image */
+.carte-face[data-sous-type].carte-selectionnee {
+    box-shadow: 0 0 0 3px var(--or), 0 8px 20px rgba(0,0,0,0.6);
+}
+
+/* ---------------------------- ZONE IA ---------------------------- */
+
+.zone-ia {
+    opacity: 0.92;
+}
+
+.ia-indicateur {
+    font-size: 0.82rem;
+    color: var(--or);
+    opacity: 0.85;
+    margin: 0 0 8px;
+    font-style: italic;
+    animation: ia-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes ia-pulse {
+    0%, 100% { opacity: 0.55; }
+    50%       { opacity: 1;    }
+}
+
+/* Carte IA sélectionnée dans son HUD : contour doré + légère élévation */
+.ia-carte-active {
+    transform: translateY(-8px) scale(1.12) !important;
+    box-shadow: 0 0 0 2px var(--or), var(--ombre) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ---------------------------- ACCESSIBILITÉ ---------------------------- */
+
+button:focus-visible {
+    outline: 2px solid var(--creme);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
