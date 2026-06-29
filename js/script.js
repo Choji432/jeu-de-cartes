@@ -145,6 +145,9 @@ function creerDeckPouvoir() {
     for (let i = 0; i < 3; i++) {
         deck.push({ id: `vision-${i}`, famille: 'special', sousType: 'vision', nom: 'Vision' });
     }
+    for (let i = 0; i < 3; i++) {
+        deck.push({ id: `entreouvert-${i}`, famille: 'special', sousType: 'entreouvert', nom: 'Entrouverte' });
+    }
     return deck;
 }
 
@@ -194,7 +197,7 @@ const etat = {
     tourActuel: 0,
     perspective: 0,
     selection: null,
-    actionEnCours: null, // null | 'echanger' | 'blocage' | 'deblocage' | 'vol' | 'vision'
+    actionEnCours: null, // null | 'echanger' | 'blocage' | 'deblocage' | 'vol' | 'vision' | 'entreouvert'
     cible: null,         // id du joueur ciblé par Vol ou Vision
     animation: false,    // true pendant une animation (bloque les interactions)
     vainqueur: null,
@@ -2333,6 +2336,109 @@ function afficherEcranPassation(joueur, callback) {
 }
 
 /* ====================================================================
+   ENTROUVERTE : peek d'une case du plateau sans l'échanger
+   ==================================================================== */
+
+function jouerEntrouverte(indexCase) {
+    const joueurActif = etat.joueurs[etat.tourActuel];
+    const carte = carteSelectionnee();
+    if (!carte || carte.sousType !== 'entreouvert') return;
+
+    sonEntreOuvert();
+
+    joueurActif.main = joueurActif.main.filter(c => c.id !== carte.id);
+    etat.defaussePouvoir.push(carte);
+    etat.selection     = null;
+    etat.actionEnCours = null;
+    etat.cible         = null;
+    rendrePioche();
+
+    etat.animation = true;
+    animerEntrouverte(indexCase, () => {
+        etat.animation = false;
+        avancerTour(false);
+    });
+}
+
+function animerEntrouverte(indexCase, callback) {
+    const caseEl  = document.querySelector(`[data-slot="${indexCase}"]`);
+    const slot    = etat.plateau[indexCase];
+    if (!caseEl || !slot || !slot.carte) { callback(); return; }
+
+    const carte = slot.carte;
+    const rect  = caseEl.getBoundingClientRect();
+
+    // Wrapper positionné exactement sur la case
+    const wrapper = document.createElement('div');
+    Object.assign(wrapper.style, {
+        position:      'fixed',
+        left:          rect.left   + 'px',
+        top:           rect.top    + 'px',
+        width:         rect.width  + 'px',
+        height:        rect.height + 'px',
+        zIndex:        '400',
+        pointerEvents: 'none',
+        borderRadius:  '6px',
+        overflow:      'hidden',
+    });
+
+    // Face de la carte révélée derrière la porte
+    const face = document.createElement('div');
+    const faceClasses = ['carte-face'];
+    if (carte.famille === 'pouvoir') faceClasses.push('carte-pouvoir-face');
+    else if (carte.famille === 'special') faceClasses.push('carte-special-face');
+    face.className = faceClasses.join(' ');
+    if (carte.sousType && CARTES_IMAGES[carte.sousType]) {
+        face.dataset.sousType = carte.sousType;
+    } else if (carte.image) {
+        face.style.backgroundImage    = `url('${urlCarte(carte.image)}')`;
+        face.style.backgroundSize     = 'cover';
+        face.style.backgroundPosition = 'center';
+    } else {
+        face.textContent = carte.nom || '?';
+    }
+    Object.assign(face.style, {
+        position:  'absolute',
+        width:     '100%',
+        height:    '100%',
+        margin:    '0',
+        minHeight: '0',
+    });
+
+    // Porte (dos de la carte) qui pivote vers la gauche comme une porte
+    const porte = document.createElement('div');
+    porte.className = 'carte-dos';
+    Object.assign(porte.style, {
+        position:        'absolute',
+        width:           '100%',
+        height:          '100%',
+        margin:          '0',
+        transformOrigin: 'left center',
+        transition:      'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
+    });
+
+    wrapper.appendChild(face);
+    wrapper.appendChild(porte);
+    document.body.appendChild(wrapper);
+    caseEl.style.visibility = 'hidden';
+
+    // Ouverture de la porte
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        porte.style.transform = 'perspective(500px) rotateY(-78deg)';
+    }));
+
+    // Maintien ouvert puis fermeture
+    setTimeout(() => {
+        porte.style.transform = 'perspective(500px) rotateY(0deg)';
+        setTimeout(() => {
+            caseEl.style.visibility = '';
+            wrapper.remove();
+            callback();
+        }, 480);
+    }, 450 + 2000);
+}
+
+/* ====================================================================
    ANIMATION VOL
    ==================================================================== */
 
@@ -2449,12 +2555,13 @@ function animerPioche(callback) {
 
 // Table de correspondance sousType → fichier image
 const CARTES_IMAGES = {
-    blocage:    'CracCric.png',
-    deblocage:  'CracCrouc.png',
-    vol:        'Vol.png',
-    vision:     'Vision.png',
-    cagibi:     'Cagibi.png',
-    protection: 'Immunite.png',
+    blocage:     'CracCric.png',
+    deblocage:   'CracCrouc.png',
+    vol:         'Vol.png',
+    vision:      'Vision.png',
+    cagibi:      'Cagibi.png',
+    protection:  'Immunite.png',
+    entreouvert: 'Entreouvert.png',
 };
 
 // Crée un élément carte flottant positionné en fixed, prêt à animer
@@ -2863,10 +2970,11 @@ function jouerIA() {
     const casesLibres   = etat.plateau.map((s, i) => ({ s, i })).filter(({ s }) => !s.bloquePar);
     const casesBloquees = etat.plateau.map((s, i) => ({ s, i })).filter(({ s }) => s.bloquePar);
 
-    const volCard       = main.find(c => c.sousType === 'vol');
-    const visionCard    = main.find(c => c.sousType === 'vision');
-    const blocageCard   = main.find(c => c.sousType === 'blocage');
-    const deblocageCard = main.find(c => c.sousType === 'deblocage');
+    const volCard          = main.find(c => c.sousType === 'vol');
+    const visionCard       = main.find(c => c.sousType === 'vision');
+    const blocageCard      = main.find(c => c.sousType === 'blocage');
+    const deblocageCard    = main.find(c => c.sousType === 'deblocage');
+    const entreouvertCard  = main.find(c => c.sousType === 'entreouvert');
 
     // Carte que l'IA préfère sacrifier (garde ses propres trésors en priorité)
     const carteASacrifier = main.find(c => !(c.famille === 'tresor' && c.personnageId === joueur.personnage.id));
@@ -2904,7 +3012,18 @@ function jouerIA() {
         }
     }
 
-    // Priorité 3 : Déblocage
+    // Priorité 3 : Entrouverte — l'IA entrouvre une case libre au hasard
+    if (entreouvertCard && casesLibres.length > 0) {
+        const { i: ci } = casesLibres[Math.floor(Math.random() * casesLibres.length)];
+        etat.selection     = entreouvertCard.id;
+        etat.actionEnCours = 'entreouvert';
+        etat.cible         = null;
+        rendreTout();
+        agir(() => jouerEntrouverte(ci));
+        return;
+    }
+
+    // Priorité 4 : Déblocage
     if (deblocageCard && casesBloquees.length > 0) {
         const { i: ci } = casesBloquees[Math.floor(Math.random() * casesBloquees.length)];
         etat.selection     = deblocageCard.id;
@@ -2988,6 +3107,7 @@ function rendrePlateau() {
                 if (etat.actionEnCours === 'echanger' && !slot.bloquePar) jouable = true;
                 if (etat.actionEnCours === 'blocage' && !slot.bloquePar) jouable = true;
                 if (etat.actionEnCours === 'deblocage' && slot.bloquePar) jouable = true;
+                if (etat.actionEnCours === 'entreouvert' && !slot.bloquePar && slot.carte) jouable = true;
             }
             if (jouable) classes.push('case-jouable');
 
@@ -3003,6 +3123,7 @@ function rendrePlateau() {
             if (etat.actionEnCours === 'echanger') echangerCarte(i);
             else if (etat.actionEnCours === 'blocage') animerBlocage(i, () => poserBlocage(i));
             else if (etat.actionEnCours === 'deblocage') animerDeblocage(i, () => poserDeblocage(i));
+            else if (etat.actionEnCours === 'entreouvert') jouerEntrouverte(i);
         });
     });
 }
@@ -3269,6 +3390,9 @@ function rendreActionsCarte() {
     }
     if (carte.sousType === 'vision') {
         boutons.push(`<button data-action="vision" class="${etat.actionEnCours === 'vision' ? 'actif' : ''}">Observer une carte</button>`);
+    }
+    if (carte.sousType === 'entreouvert') {
+        boutons.push(`<button data-action="entreouvert" class="${etat.actionEnCours === 'entreouvert' ? 'actif' : ''}">Entrouvrir une porte</button>`);
     }
     if (carte.sousType === 'protection') {
         boutons.push(`<button id="btn-jouer-protection">Activer la protection</button>`);
